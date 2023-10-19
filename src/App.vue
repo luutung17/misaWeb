@@ -1,26 +1,50 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container">
+    <Theader></Theader>
+    <TSidebar></TSidebar>
+    <router-view></router-view>
+  </div>
 </template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Theader from "./Layout/Header/Header.vue";
+import TSidebar from "./Layout/Sidebar/Sidebar.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    Theader,
+    TSidebar,
+  },
+};
 </script>
-
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+* {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  text-decoration: none;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  font-family: "Noto Sans", sans-serif;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 200px auto;
+  grid-template-rows: 10vh 90vh;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 </style>
