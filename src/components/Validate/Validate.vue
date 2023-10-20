@@ -3,15 +3,22 @@
     <div class="validate-container">
       <div class="row0">
         <h2>Thông báo</h2>
-        <i class="fas fa-window-close" @click="closeValidate"></i>
+        <i class="fas fa-window-close" @click="closeNotice"></i>
       </div>
       <div class="row1">
-        <i class="fas fa-question-circle"></i>
-        <h4><i class="fas fa-circle"></i> {{ this.propText }}</h4>
+        <div
+          class="icon"
+          :class="{
+            'icon-success': type == 'success',
+            'icon-warning': type == 'warning',
+            'icon-question': type == 'question',
+            'icon-error': type == 'error',
+          }"
+        ></div>
+        <li v-for="item in msgs" :key="item">{{ item }}</li>
       </div>
       <div class="row2">
-        <button>Xác nhận</button>
-        
+        <button @click='deleteItem'>Xác nhận</button>
       </div>
     </div>
   </div>
@@ -21,17 +28,33 @@
 /* eslint-disable */
 export default {
   name: "Validate",
-  props: ["propText"],
+  props: {
+    msgs: {
+      type: [],
+      default: () => {
+        return [];
+      },
+      require: true,
+    },
+    type: {
+      default: ()=>{
+        return 'warning';
+      },
+      require: false,
+    },
+  },
   data() {
     return {
       showValidate: true,
     };
   },
   methods: {
-    closeValidate() {
-      this.showValidate = false;
-      this.$parent.isShowDialog = false;
+    closeNotice() {
+      this.$emit("closeNotice");
     },
+    deleteItem(){
+      this.$emit("closeNotice");
+    }
   },
 };
 </script>
@@ -70,6 +93,10 @@ export default {
 
 h2 {
   margin: 0;
+}
+li {
+  display: flex;
+  flex-direction: column;
 }
 
 .fa-window-close {
@@ -122,6 +149,30 @@ button:nth-child(1) {
 button:nth-child(2) {
   background-color: #ff4d4d; /* Màu nền cho nút "Hủy bỏ" */
   color: #fff; /* Màu chữ cho nút "Hủy bỏ" */
+}
+.icon-warning {
+  background: url("../../assets/Sprites.96108a46.svg") no-repeat -593px -145px;
+  width: 22px;
+  height: 23px;
+  margin-right: 10px;
+}
+.icon-success {
+  background: url("../../assets/Sprites.96108a46.svg") no-repeat -482px -146px;
+  width: 22px;
+  height: 23px;
+  margin-right: 10px;
+}
+.icon-question {
+  background: url("../../assets/Sprites.96108a46.svg") no-repeat -1552px -312px;
+  width: 22px;
+  height: 23px;
+  margin-right: 10px;
+}
+.icon-error {
+  background: url("../../assets/Sprites.96108a46.svg") no-repeat -1552px -312px;
+  width: 22px;
+  height: 23px;
+  margin-right: 10px;
 }
 </style>
 

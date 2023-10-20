@@ -35,11 +35,11 @@
           <td>{{ cus.FullName }}</td>
           <td>{{ formatGender(cus.Gender) }}</td>
           <td>{{ cus.DateOfBirth }}</td>
-          <td>{{cus.CustomerGroupId}}</td>
+          <td>{{ cus.CustomerGroupId }}</td>
           <td>{{ cus.Address }}</td>
           <td>{{ formatNumber(cus.DebitAmount) }}</td>
           <td class="txt-icon">
-            <div class='icon'>
+            <div class="icon">
               <i class="fas fa-edit" @click="showModal('edit', cus)"></i>
               <i class="fas fa-trash" @click="deleteItem(cus)"></i>
             </div>
@@ -58,7 +58,6 @@
 </template>
 
 <script>
-
 import CustomerForm from "../../View/CustomerForm.vue";
 /* eslint-disable */
 export default {
@@ -93,7 +92,10 @@ export default {
       this.isModalVisible = false;
     },
     deleteItem(cus) {
-      const confirmDelete = window.confirm("Bạn có chắc muốn xóa không?");
+      const confirmDelete = this.$temitter.emit(
+        "onShowNotice",
+        "Bạn chắc chắn có muốn xóa không ?"
+      );
       if (confirmDelete) {
         fetch(`https://cukcuk.manhnv.net/api/v1/customers/${cus.CustomerId}`, {
           method: "DELETE",
@@ -116,35 +118,31 @@ export default {
       }
     },
     fetchData() {
-      this.$taxios.get("https://cukcuk.manhnv.net/api/v1/customers")
-        .then((res) =>{
+      this.$taxios
+        .get("https://cukcuk.manhnv.net/api/v1/customers")
+        .then((res) => {
           this.customers = res.data;
-
         })
         .catch((error) => {
           console.log(error);
           const response = error.response;
-          const status=response.status;
-          let msg="";
+          const status = response.status;
+          let msg = "";
           switch (status) {
             case 400:
-
               break;
-              case 401:
-              
+            case 401:
               break;
-              case 402:
-              
+            case 402:
               break;
-              case 403:
-              
+            case 403:
               break;
-              case 404:
-               msg="Địa chỉ truy cập không đúng";
-               alert(msg);
+            case 404:
+              msg = "Địa chỉ truy cập không đúng";
+              alert(msg);
               break;
           }
-        })
+        });
     },
     formatNumber(amount) {
       if (amount !== null) {
@@ -165,7 +163,7 @@ export default {
   },
   created() {
     this.fetchData();
-  }
+  },
 };
 </script>
 <style scoped>
@@ -251,13 +249,14 @@ th {
 td:nth-child(even) {
   background-color: #f2f2f2;
 }
-.icon{
+.icon {
   display: flex;
 }
-.fa-edit{
-  margin-right:10px ;
+.fa-edit {
+  margin-right: 10px;
 }
-.fa-edit,.fa-trash{
+.fa-edit,
+.fa-trash {
   padding: 5px;
 }
 </style>

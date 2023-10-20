@@ -74,12 +74,12 @@
         <label class="add-modal-email modal-lb">
           <span> Email <span style="color: red">*</span> </span>
           <input type="text" class="modal-inp" v-model="data.Email" />
-          <div v-if="errors.includes('Email required.')">
+          <!-- <div v-if="errors.includes('Email required.')">
             <p style="color: red">Email không được để trống</p>
           </div>
           <div v-if="errors.includes('Valid email required.')">
             <p style="color: red">Vui lòng điền đúng thông tin email</p>
-          </div>
+          </div> -->
         </label>
         <label class="add-modal-noicap modal-lb">
           Nơi cấp
@@ -112,7 +112,6 @@
       <div class="row7">
         <button class="btn-huy btn" @click="close">Hủy</button>
         <button class="btn-cat btn" @click="saveData">Lưu</button>
-        
       </div>
     </div>
   </div>
@@ -152,13 +151,19 @@ export default {
     };
   },
   methods: {
-    
     validEmail: function (email) {
       var re =
         /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);
     },
     close() {
+      const newCustomer = JSON.stringify(this.item);
+      if (newCustomer != this.customerOrigilJson) {
+        this.$temitter.emit(
+          "onShowNotice",
+          "Dữ liệu đã bị thay đổi bạn có chắc chắn muốn đóng form!"
+        );
+      }
       this.$emit("closeFormTable");
     },
     saveData(e) {
@@ -173,26 +178,8 @@ export default {
       }
       if (!this.errors.length) return true;
       e.preventDefault();
-      // this.$emit("isShowDialog");
-      
-      // if (!this.data.CustomerCode) {
-      //   this.isShowDialog = !this.isShowDialog;
-      //   this.propText = "Mã Nhân Viên không được để trống";
-      // }
-      // if (!this.data.FullName) {
-      //   this.isShowDialog = !this.isShowDialog;
-      //   this.propText = "Họ và tên không được để trống";
-      // }
-      // if (!this.data.CustomerCode && !this.data.FullName) {
-      //   this.isShowDialog = !this.isShowDialog;
-      //   this.propText = "Vui lòng điền đầy đủ các trường dữ liệu bắt buộc";
-      //   console.log(this.isShowDialog);
-      // }
-
-
-
       // Gọi API thực hiện cất dữ liệu
-      
+
       if (this.formMode == "add") {
         this.$taxios
           .post("https://cukcuk.manhnv.net/api/v1/customers", this.item)
@@ -201,7 +188,10 @@ export default {
             const status = res.status;
             switch (status) {
               case 201:
-                alert("thêm mới thành công");
+                this.$temitter.emit(
+                  "onToast",
+                  "Thêm mới thành công!"
+                );
                 this.$emit("closeFormTable");
                 break;
               default:
@@ -217,16 +207,40 @@ export default {
             let msg = "";
             switch (status) {
               case 400:
+                this.$temitter.emit(
+                  "onShowNotice",
+                  "Dữ liệu không hợp lệ!"
+                );
                 break;
               case 401:
+                this.$temitter.emit(
+                  "onShowNotice",
+                  "Có lỗi xảy ra vui lòng liên hệ Giảng viên để được hỗ trợ!"
+                );
                 break;
               case 402:
+                this.$temitter.emit(
+                  "onShowNotice",
+                  "Có lỗi xảy ra vui lòng liên hệ Giảng viên để được hỗ trợ!"
+                );
                 break;
               case 403:
+                this.$temitter.emit(
+                  "onShowNotice",
+                  "Có lỗi xảy ra vui lòng liên hệ Giảng viên để được hỗ trợ!"
+                );
                 break;
               case 404:
-                msg = "Địa chỉ truy cập không đúng";
-                alert(msg);
+                this.$temitter.emit(
+                  "onShowNotice",
+                  "Có lỗi xảy ra vui lòng liên hệ Giảng viên để được hỗ trợ!"
+                );
+                break;
+              default:
+                this.$temitter.emit(
+                  "onShowNotice",
+                  "Có lỗi xảy ra vui lòng liên hệ Giảng viên để được hỗ trợ!"
+                );
                 break;
             }
           });
@@ -243,6 +257,7 @@ export default {
         .get("https://cukcuk.manhnv.net/api/v1/customers/NewCustomerCode")
         .then((res) => {
           this.item.CustomerCode = res.data;
+          console.log(res.data);
         })
         .catch((error) => {
           console.log(error);
